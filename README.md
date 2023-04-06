@@ -3,77 +3,78 @@
 This repo is for storing my presentation and steps for teaching the basics of Containers. from the play-with-docker.com site start a new instance and follow below.
 
 
-#Showing off Container basics
+# Showing off Container basics
 docker container list
-##Run your first container PowerShell
+## Run your first container PowerShell
 docker -it run mcr.microsoft.com/powershell
-##You are now inside the container
+## You are now inside the container
 $PSVersionTable
 1..10 | foreach{Write-Host $_}
 exit
-##You are back at the Linux Shell
+## You are back at the Linux Shell
 $PSVersionTable
 mkdir PS
-##Let's make a script on the local Linux host to run inside our container
+## Let's make a script on the local Linux host to run inside our container
 echo "1..10 | foreach{Write-Host PS}" > example.ps1
 docker run -it -v /root/PS:/home/PS mcr.microsoft.com/powershell
-##Back inside a new container with a mounted volume, lets run our script
+## Back inside a new container with a mounted volume, lets run our script
 cd /home/PS
 ./example.ps1
-##The output shouldnt be what we expected, lets fix the script and write over the existing file
+## The output shouldnt be what we expected, lets fix the script and write over the existing file
 '1..10 | foreach{Write-Host $_}' | out-file example.ps1
-##We can also make a test file in this directory
+## We can also make a test file in this directory
 New-Item -type File test
 exit
-##Back in the Linux Shell
+## Back in the Linux Shell
 ls
-##Should see the new file as well as the changes to the example
+## Should see the new file as well as the changes to the example
 cat example.ps1
-##Running Interactively shouws STDOUT and closes after execution
+## Running Interactively shouws STDOUT and closes after execution
 docker run -it -v /root/PS:/home/PS -w /home/PS mcr.microsoft.com/powershell pwsh ./example.ps1
-##Running detached shows no output only the container ID
+## Running detached shows no output only the container ID
 docker run -d -v /root/PS:/home/PS -w /home/PS mcr.microsoft.com/powershell pwsh ./example.ps1
-##Use the above container ID to get the logs format "docker logs CONTAINERID" only the first few characters of the ID are required
+## Use the above container ID to get the logs format "docker logs CONTAINERID" only the first few characters of the ID are required
 docker logs 
 
-#Now that the basics are over lets step it up by showing a Docker Compose file
-##You will need to update the Docker Compose file from the one node example.
-##Where it says "Host(`whoami.ip172-19-0-31-cgnenaqe69v000flpg8g.direct.labs.play-with-docker.com`)"
+# Now that the basics are over lets step it up by showing a Docker Compose file
+## You will need to update the Docker Compose file from the one node example.
+## Where it says "Host(`whoami.ip172-19-0-31-cgnenaqe69v000flpg8g.direct.labs.play-with-docker.com`)"
 ##You will need to update the "ip172-19-0-31-cgnenaqe69v000flpg8g" with the name for you play with docker instance.
-##You should be able to copy and paste it from the ssh section
-##Drag and Drop  the edited Docker Compose file from folder one node example on to the shell window
-##From the shell run
+## You should be able to copy and paste it from the ssh section
+## Drag and Drop  the edited Docker Compose file from folder one node example on to the shell window
+## From the shell run
 docker compose up -d
-##This should start two containers from the compose file
+## This should start two containers from the compose file
 docker ps
-##Now that they are running test them out by clicking on the two links at the top of the window 80 and 8080.
-##you will notice 80 does not work, thats because it is behind a reverse proxy you need to use the host address you configured above.
-##It should be as simple as appending "whoami." on the front of the address. or you may need to copy it from your docker compose file
+## Now that they are running test them out by clicking on the two links at the top of the window 80 and 8080.
+## You will notice 80 does not work, thats because it is behind a reverse proxy you need to use the host address you configured above.
+## It should be as simple as appending "whoami." on the front of the address. or you may need to copy it from your docker compose file
 
-New machine
+# Build you own image
+## Create a New Instance
 https://github.com/docker/getting-started
 mkdir getting-started
 cd getting-started
 docker run -d -p 80:80 docker/getting-started
 ## click on 80 link
 ## I will provide less guidance here you should be able to follow instructions under creating your app
-##Copy app zipped to folder
-##unzip app.zip
-##add dockerfile based on instructions
-##rezip and drop in shell
+## Copy app zipped to folder
+## unzip app.zip
+## add dockerfile based on instructions
+## rezip and drop in shell
 unzip app.zip
 cd app
 docker build -t getting-started .
 docker run -dp 3000:3000 getting-started
-##Click on link 3000
-##Have fun, there are more labs you can do from here if you continue with the instructions.
+## Click on link 3000
+## Have fun, there are more labs you can do from here if you continue with the instructions.
 
-##Once you are done delete machines
-##Click on the wrench and create a new cluster 1 Manager Node and 1 Worker Node.
-##Click into the Manager Shell
+## Once you are done delete machines
+## Click on the wrench and create a new cluster 1 Manager Node and 1 Worker Node.
+## Click into the Manager Shell
 docker info
-##You should see something showing the server is a manager, from the worker node it should state the managers IP address
-##Drag and Drop Docker Compose from swarm example folder:
+## You should see something showing the server is a manager, from the worker node it should state the managers IP address
+## Drag and Drop Docker Compose from swarm example folder:
 
 docker stack deploy --compose-file docker-compose.yml whoami
 
@@ -84,8 +85,6 @@ docker ps on worker node
 docker ps on manager node
 ## you should see one whoami container
 ## Click on 8080 link above
-##You will need to clear cookies and refresh or attempt to connect from another browser, but the hostname should change.
+## You will need to clear cookies and refresh or attempt to connect from another browser, but the hostname should change.
 docker service rm whoami_whoami
 ## Close you session you are all done
-
-
