@@ -1,0 +1,11 @@
+version: "3.9"
+services:
+  whoami:
+    image: containous/whoami
+    ports:
+      - "80:80"
+    deploy:
+      mode: replicated
+      replicas: 2
+      placement:
+        max_replicas_per_node: 1
