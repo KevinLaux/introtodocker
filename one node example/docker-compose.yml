@@ -22,5 +22,5 @@ services:
     container_name: "simple-service"
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.whoami.rule=Host(`whoami.ip172-18-0-7-cgn4jso1k7jg00cu7b1g.direct.labs.play-with-docker.com`)"
+      - "traefik.http.routers.whoami.rule=Host(`whoami.ip172-19-0-31-cgnenaqe69v000flpg8g.direct.labs.play-with-docker.com`)"
       - "traefik.http.routers.whoami.entrypoints=web"

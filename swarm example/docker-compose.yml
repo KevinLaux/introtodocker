@@ -1,11 +1,16 @@
 version: "3.9"
+
 services:
-  whoami:
+  whomami:
     image: containous/whoami
     ports:
-      - "80:80"
+      - "8080:80"
+    networks:
+      - overlay
     deploy:
       mode: replicated
       replicas: 2
-      placement:
-        max_replicas_per_node: 1
+      endpoint_mode: vip
+
+networks:
+  overlay:
