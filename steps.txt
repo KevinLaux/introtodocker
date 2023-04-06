@@ -1,0 +1,63 @@
+docker container list
+docker -it run mcr.microsoft.com/powershell
+$PSVersionTable
+1..10 | foreach{Write-Host $_}
+exit
+$PSVersionTable
+mkdir PS
+echo "1..10 | foreach{Write-Host PS}" > example.ps1
+docker run -it -v /root/PS:/home/PS mcr.microsoft.com/powershell
+cd /home/PS
+./example.ps1
+'1..10 | foreach{Write-Host $_}' | out-file example.ps1
+New-Item -type File test
+exit
+ls
+cat example.ps1
+docker run -it -v /root/PS:/home/PS -w /home/PS mcr.microsoft.com/powershell pwsh ./example.ps1
+docker run -d -v /root/PS:/home/PS -w /home/PS mcr.microsoft.com/powershell pwsh ./example.ps1
+docker logs 
+
+Drag and Drop Docker Compose:
+
+version: "3.3"
+
+services:
+
+  traefik:
+    image: "traefik:v2.9"
+    container_name: "traefik"
+    command:
+      #- "--log.level=DEBUG"
+      - "--api.insecure=true"
+      - "--providers.docker=true"
+      - "--providers.docker.exposedbydefault=false"
+      - "--entrypoints.web.address=:80"
+    ports:
+      - "80:80"
+      - "8080:8080"
+    volumes:
+      - "/var/run/docker.sock:/var/run/docker.sock:ro"
+
+  whoami:
+    image: "traefik/whoami"
+    container_name: "simple-service"
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.whoami.rule=Host(`whoami.ip172-18-0-7-cgn4jso1k7jg00cu7b1g.direct.labs.play-with-docker.com`)"
+      - "traefik.http.routers.whoami.entrypoints=web"
+
+docker compose up -d
+docker ps
+
+New machine
+https://github.com/docker/getting-started
+mkdir getting-started
+cd getting-started
+docker run -d -p 80:80 docker/getting-started
+follow instructions
+Copy app zipped to folder
+unzip app.zip
+cd app
+docker build -t getting-started .
+docker run -dp 3000:3000 getting-started
